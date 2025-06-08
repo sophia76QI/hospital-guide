@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)file:///C:/Users/user/Downloads/hospital_guide_site.html -->
+<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>병원생활 안내</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            padding: 15px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 25px;
+            width: 300px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            outline: none;
+        }
+
+        .search-box:focus {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transform: scale(1.02);
+            transition: all 0.3s ease;
+        }
+
+        select {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-size: 1rem;
+            margin: 10px;
+        }
+
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .guide-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            text-align: left;
+            width: 100%;
+        }
+
+        .guide-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .guide-card:focus {
+            outline: 3px solid #667eea;
+        }
+
+        .guide-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .card-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .card-note {
+            font-size: 0.9rem;
+            color: #888;
+            font-style: italic;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        mark {
+            background: #fffa65;
+            padding: 0 4px;
+            border-radius: 3px;
+        }
+
+        .contact-info {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .contact-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .contact-item {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .contact-item:hover {
+            background: #e9ecef;
+            transform: scale(1.02);
+        }
+
+        .contact-label {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .contact-value {
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .time-highlight {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 2px;
+        }
+
+        .urgent-note {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .search-box {
+                width: 250px;
+            }
+            
+            .guide-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header fade-in">
+            <h1>🏥 병원생활 안내</h1>
+            <p>편안하고 안전한 입원생활을 위한 종합안내</p>
+        </div>
+
+        <div class="search-container fade-in">
+            <input type="text" class="search-box" placeholder="" id="searchInput">
+        </div>
+
+        <div style="text-align:center; margin-bottom: 20px;">
+            <select id="categoryFilter">
+                <option value="">전체 보기</option>
+                <option value="회진시간">회진시간</option>
+                <option value="식사안내">식사안내</option>
+                <option value="감염예방">감염예방</option>
+                <option value="화재안전">화재안전</option>
+                <option value="낙상주의">낙상주의</option>
+                <option value="폭력상담">폭력 상담 및 신고</option>
+                <option value="사생활보호">사생활 보호신청</option>
+                <option value="취약환자">취약환자 지원</option>
+                <option value="증명서발급">증명서 발급</option>
+                <option value="불만접수">불만 및 고충 접수</option>
+            </select>
+        </div>
+
+        <div class="guide-grid" id="guideGrid">
+            <button class="guide-card fade-in" data-category="회진시간">
+                <div class="card-icon">🩺</div>
+                <div class="card-title">회진시간</div>
+                <div class="card-content">
+                    <div class="time-highlight">오전 8시 ~ 9시</div>
+                    <div class="time-highlight">오후 4시 ~ 5시</div>
+                </div>
+                <div class="card-note">⚠️ 응급진료 및 수술로 시간이 변동될 수 있습니다.</div>
+            <div class="current-status" style="margin-top: 10px; padding: 8px; background: rgb(227, 242, 253); border-radius: 8px; font-size: 0.9rem; text-align: center; font-weight: bold;">🕐 현재시간: 22:23</div></button>
+
+            <button class="guide-card fade-in" data-category="식사안내">
+                <div class="card-icon">🍽️</div>
+                <div class="card-title">식사안내</div>
+                <div class="card-content">
+                    <div class="time-highlight">아침 07:40</div>
+                    <div class="time-highlight">점심 11:40</div>
+                    <div class="time-highlight">저녁 17:40</div>
+                </div>
+                <div class="card-note">💡 보호자 식사는 간호사실에 문의해주세요</div>
+            </button>
+
+            <button class="guide-card fade-in" data-category="감염예방">
+                <div class="card-icon">🧼</div>
+                <div class="card-title">감염예방</div>
+                <div class="card-content">
+                    <strong>손씻기를 생활화합니다</strong><br>
+                    상주보호자 1인만 가능합니다
+                </div>
+                <div class="urgent-note">⛔ 외부음식 반입 금지</div>
+            </button>
+
+            <button class="guide-card fade-in" data-category="화재안전">
+                <div class="card-icon">🚨</div>
+                <div class="card-title">화재안전</div>
+                <div class="card-content">
+                    화재시 비상구를 이용하여 대피하세요
+                </div>
+                <div class="urgent-note">🚭 원내에서는 절대 금연입니다</div>
+            </button>
+
+            <button class="guide-card fade-in" data-category="낙상주의">
+                <div class="card-icon">⚠️</div>
+                <div class="card-title">낙상주의</div>
+                <div class="card-content">
+                    미끄럼, 넘어짐을 주의하세요
+                </div>
+                <div class="card-note">🤝 거동이 불편하신 분은 보호자와 동행해주세요</div>
+            </button>
+
+            <button class="guide-card fade-in" data-category="폭력상담">
+                <div class="card-icon">🚔</div>
+                <div class="card-title">폭력 상담 및 신고</div>
+                <div class="card-content">
+                    <strong>총무팀:</strong> 740-5326<br>
+                    <strong>응급신고:</strong> 112
+                </div>
+                <div class="urgent-note">📞 꼭 신고해주세요</div>
+            </button>
+
+            <button class="guide-card fade-in" data-category="사생활보호">
+                <div class="card-icon">🔒</div>
+                <div class="card-title">사생활 보호신청</div>
+                <div class="card-content">
+                    <strong>원무팀:</strong> 740-5345<br>
+                    <strong>간호사실</strong>로도 신청 가능
+                </div>
+                <div class="card-note">🛡️ 사생활을 보호해드립니다</div>
+            </button>
+
+            <button class="guide-card fade-in" data-category="취약환자">
+                <div class="card-icon">🤗</div>
+                <div class="card-title">취약환자 지원</div>
+                <div class="card-content">
+                    학대·폭력피해자, 외국인, 청각장애인은<br>
+                    <strong>간호사실</strong>로 문의하세요
+                </div>
+                <div class="card-note">💙 입원한 병동에 문의해주세요</div>
+            </button>
+
+            <button class="guide-card fade-in" data-category="증명서발급">
+                <div class="card-icon">📋</div>
+                <div class="card-title">증명서 발급</div>
+                <div class="card-content">
+                    진단서, 입퇴원확인서 등<br>
+                    각종 의료증명서 발급
+                </div>
+                <div class="card-note">📝 서류는 입원기간 중에 미리 신청하세요</div>
+            </button>
+
+            <button class="guide-card fade-in" data-category="불만접수">
+                <div class="card-icon">📢</div>
+                <div class="card-title">불만 및 고충 접수</div>
+                <div class="card-content">
+                    <strong>고객지원팀:</strong> 740-5980<br>
+                    신관 2층 방문, 전화접수<br>
+                    고객소리함, 홈페이지 접수
+                </div>
+                <div class="card-note">💬 불편사항은 언제든 접수해주세요</div>
+            </button>
+        </div>
+
+        <div class="contact-info fade-in">
+            <div class="contact-title">🏥 주요 연락처</div>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <div class="contact-label">총무팀 (폭력신고)</div>
+                    <div class="contact-value">740-5326</div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-label">원무팀 (사생활보호)</div>
+                    <div class="contact-value">740-5345</div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-label">고객지원팀</div>
+                    <div class="contact-value">740-5980</div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-label">응급신고</div>
+                    <div class="contact-value">112</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">×</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // 검색 기능
+        const searchInput = document.getElementById('searchInput');
+        const guideCards = document.querySelectorAll('.guide-card');
+        const categoryFilter = document.getElementById('categoryFilter');
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            guideCards.forEach(card => {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const content = card.querySelector('.card-content').textContent.toLowerCase();
+                const note = card.querySelector('.card-note') ? 
+                    card.querySelector('.card-note').textContent.toLowerCase() : '';
+                
+                if (title.includes(searchTerm) || content.includes(searchTerm) || note.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    card.classList.add('fade-in');
+                    
+                    // 키워드 하이라이팅
+                    if (searchTerm) {
+                        highlightKeyword(card.querySelector('.card-title'), searchTerm);
+                        highlightKeyword(card.querySelector('.card-content'), searchTerm);
+                        if (card.querySelector('.card-note')) {
+                            highlightKeyword(card.querySelector('.card-note'), searchTerm);
+                        }
+                    }
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // 카테고리 필터
+        categoryFilter.addEventListener('change', function () {
+            const selected = this.value.toLowerCase();
+            guideCards.forEach(card => {
+                const category = card.getAttribute('data-category').toLowerCase();
+                if (!selected || category.includes(selected)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // 키워드 하이라이팅 함수
+        function highlightKeyword(element, keyword) {
+            if (!keyword || !element) return;
+            
+            // 기존 하이라이팅 제거
+            const originalText = element.textContent;
+            element.innerHTML = originalText;
+            
+            // 새로운 하이라이팅 적용
+            const regex = new RegExp(`(${keyword})`, 'gi');
+            element.innerHTML = originalText.replace(regex, '<mark>$1</mark>');
+        }
+
+        // 카드 클릭 시 상세 정보 모달
+        guideCards.forEach(card => {
+            card.addEventListener('click', function() {
+                showDetailModal(this);
+            });
+        });
+
+        function showDetailModal(card) {
+            const modal = document.getElementById('detailModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            const title = card.querySelector('.card-title').textContent;
+            const content = card.querySelector('.card-content').innerHTML;
+            const note = card.querySelector('.card-note') ? 
+                card.querySelector('.card-note').innerHTML : '';
+            const icon = card.querySelector('.card-icon').textContent;
+            
+            modalContent.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 4rem; margin-bottom: 15px;">${icon}</div>
+                    <h2 style="color: #333; margin-bottom: 20px;">${title}</h2>
+                </div>
+                <div style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 20px;">
+                    ${content}
+                </div>
+                ${note ? `<div style="background: #f8f9fa; padding: 15px; border-radius: 10px; font-style: italic; color: #666;">${note}</div>` : ''}
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').style.display = 'none';
+        }
+
+        // 모달 외부 클릭시 닫기
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+
+        // 카드 애니메이션 효과
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        guideCards.forEach(card => {
+            observer.observe(card);
+        });
+
+        // 현재 시간 표시 기능
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ko-KR', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
+            
+            // 회진시간 카드에 현재시간 표시
+            const roundCard = document.querySelector('[data-category="회진시간"]');
+            if (roundCard) {
+                const currentHour = now.getHours();
+                let status = '';
+                
+                if (currentHour >= 8 && currentHour < 9) {
+                    status = '🟢 오전 회진시간입니다';
+                } else if (currentHour >= 16 && currentHour < 17) {
+                    status = '🟢 오후 회진시간입니다';
+                } else {
+                    status = `🕐 현재시간: ${timeString}`;
+                }
+                
+                let statusDiv = roundCard.querySelector('.current-status');
+                if (!statusDiv) {
+                    statusDiv = document.createElement('div');
+                    statusDiv.className = 'current-status';
+                    statusDiv.style.cssText = 'margin-top: 10px; padding: 8px; background: #e3f2fd; border-radius: 8px; font-size: 0.9rem; text-align: center; font-weight: bold;';
+                    roundCard.appendChild(statusDiv);
+                }
+                statusDiv.textContent = status;
+            }
+        }
+
+        // 페이지 로드시 시간 업데이트 및 1분마다 갱신
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 60000);
+    </script>
+
+</body></html>
